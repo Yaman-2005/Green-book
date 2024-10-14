@@ -43,4 +43,10 @@ class mongodb {
     var collection = db.collection(COLLECTION);
     await collection.update(where.eq('tag', tag), modify.set('Tpassword', password));
   }
+  static void deletePassword(String tag) async {
+    var db = await Db.create(MONGO_URL);
+    await db.open();
+    var collection = db.collection(COLLECTION);
+    await collection.deleteOne({'tag':tag});
+  }
 }

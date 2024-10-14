@@ -1,8 +1,4 @@
 // ignore_for_file: camel_case_types, non_constant_identifier_names, prefer_interpolation_to_compose_strings
-
-import 'dart:io';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:testp/choice.dart';
 import 'package:testp/modify.dart';
@@ -21,10 +17,11 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool checker = false,checkerIndicator = false,chekerButton = true,checkButtonNull = true,isBank = false;
+  bool checker = false,checkerIndicator = false,chekerButton = true,checkButtonNull = true,isBank = false,deleted=false;
   late String search = "", website = "", password = "",Tpassword = "",Ppassword = "",newWebsite = "",newPassword = "",newTpassword = "",newPpassword = "";
   void Results(String tag) async {
     setState(() {
+      deleted = false;
       checkerIndicator = true;
       checker = false;
     });
@@ -55,13 +52,19 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       checker = true;
       checkerIndicator = false;
-      if(chekerButton == false) {
-        checkButtonNull = false;
-      }
+     checkButtonNull = chekerButton;
       website = newWebsite;
       password = newPassword;
       Tpassword = newTpassword;
       Ppassword = newPpassword;
+    });
+  }
+  void delete(String tag) {
+    mongodb.deletePassword(tag);
+    setState(() {
+      checker = false;
+      checkButtonNull = false;
+      deleted = true;
     });
   }
   // This widget is the root of your application.
@@ -139,6 +142,10 @@ class _MyAppState extends State<MyApp> {
                     ),
                   ),
                   Visibility(
+                    visible: deleted,
+                      child: Text(search+' was deleted'),
+                  ),
+                  Visibility(
                     visible: checker,
                     child: SizedBox(
                       width: 10000,
@@ -162,6 +169,16 @@ class _MyAppState extends State<MyApp> {
                                   ),
                                   onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Modify(tag: search,isBank: isBank,))),
                                   child: Text("Modify "+search))
+                          ),
+                          const SizedBox(height: 15,),
+                          Visibility(
+                              visible: checkButtonNull,
+                              child: ElevatedButton(
+                                  style: const ButtonStyle(
+                                      backgroundColor: WidgetStatePropertyAll(Colors.red)
+                                  ),
+                                  onPressed: () => delete(search),
+                                  child: Text("Delete "+search))
                           )
                         ],
                       ),
