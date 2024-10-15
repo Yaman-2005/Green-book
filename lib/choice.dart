@@ -2,11 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:testp/addNew.dart';
 
 import 'addNewBank.dart';
-class Choice extends StatelessWidget {
-  const Choice({super.key});
+class Choice extends StatefulWidget {
+  final collectionName;
+  const Choice({super.key,required this.collectionName});
 
   @override
+  State<Choice> createState() => _ChoiceState();
+}
+
+class _ChoiceState extends State<Choice> {
+  @override
   Widget build(BuildContext context) {
+    String collectionName = widget.collectionName;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Enter type of password'),
@@ -19,7 +26,7 @@ class Choice extends StatelessWidget {
                 style: const ButtonStyle(
                   backgroundColor: WidgetStatePropertyAll(Colors.green)
                  ),
-                onPressed: () => Navigator.push(context,MaterialPageRoute(builder: (context) => const AddNewBank())),
+                onPressed: () => Navigator.push(context,MaterialPageRoute(builder: (context) => AddNewBank(collectionName: collectionName,))),
                 child: const Text('Netbanking/Bank details'),
             ),
             const SizedBox(height: 25,),
@@ -27,7 +34,7 @@ class Choice extends StatelessWidget {
                 style: const ButtonStyle(
                   backgroundColor: WidgetStatePropertyAll(Colors.green)
                 ),
-                onPressed: () => Navigator.push(context,MaterialPageRoute(builder: (context) => const AddNew())),
+                onPressed: () => Navigator.push(context,MaterialPageRoute(builder: (context) => AddNew(collectionName: collectionName,))),
                 child: const Text('General Password')
             )
 

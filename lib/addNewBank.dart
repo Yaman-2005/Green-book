@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'mongodb.dart';
 typedef dict = Map<String, dynamic>;
 class AddNewBank extends StatefulWidget {
-  const AddNewBank({super.key});
+  final String collectionName;
+  const AddNewBank({super.key,required this.collectionName});
 
   @override
   State<AddNewBank> createState() => _AddNewBankState();
@@ -24,13 +25,14 @@ class _AddNewBankState extends State<AddNewBank> {
     };
     return ans;
   }
-  void sendToDb() {
+  void sendToDb(String collectionName) {
     dict send = throwData();
-    mongodb.registerPassword(send);
+    mongodb.registerPassword(send,collectionName);
     Navigator.pop(context);
   }
   @override
   Widget build(BuildContext context) {
+    String collectionName = widget.collectionName;
     return Scaffold(
         appBar: AppBar(
           title: const Text("Setup a new password"),
@@ -157,7 +159,7 @@ class _AddNewBankState extends State<AddNewBank> {
               const SizedBox(height: 25,),
               ElevatedButton(
                   style: const ButtonStyle(backgroundColor: WidgetStatePropertyAll(Colors.green)),
-                  onPressed: sendToDb, child: const Text('Add Password')
+                  onPressed: () => sendToDb(collectionName), child: const Text('Add Password')
               )
             ],
           ),

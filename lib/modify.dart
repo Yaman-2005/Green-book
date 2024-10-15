@@ -3,9 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:testp/mongodb.dart';
 class Modify extends StatefulWidget {
-  final String tag;
+  final String tag,collectionName;
   final bool isBank;
-  const Modify({super.key, required this.tag,required this.isBank});
+  const Modify({super.key, required this.tag,required this.isBank,required this.collectionName});
 
   @override
   State<Modify> createState() => _ModifyState();
@@ -13,20 +13,20 @@ class Modify extends StatefulWidget {
 
 class _ModifyState extends State<Modify> {
   late String newPass = "",pass,newPpass = "",Ppass,newTpass = "",Tpass;
-  Future<void> updateDb(String tag,String pass,bool isBank,String Tpass,String Ppass) async {
+  Future<void> updateDb(String tag,String pass,bool isBank,String Tpass,String Ppass,String collectionName) async {
     if(isBank == false) {
-      mongodb.updatePassword(tag, pass);
+      mongodb.updatePassword(tag, pass,collectionName);
       Navigator.pop(context);
     }
     else {
       if(pass != "") {
-        mongodb.updatePassword(tag, pass);
+        mongodb.updatePassword(tag, pass,collectionName);
       }
       if(Tpass != "") {
-        mongodb.updateTPassword(tag, Tpass);
+        mongodb.updateTPassword(tag, Tpass,collectionName);
       }
       if(Ppass != "") {
-        mongodb.updatePPassword(tag, Ppass);
+        mongodb.updatePPassword(tag, Ppass,collectionName);
       }
       Navigator.pop(context);
     }
@@ -35,6 +35,7 @@ class _ModifyState extends State<Modify> {
   Widget build(BuildContext context) {
     String tag = widget.tag;
     bool isBank = widget.isBank;
+    String collectionName = widget.collectionName;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -105,7 +106,7 @@ class _ModifyState extends State<Modify> {
               style: const ButtonStyle(
                   backgroundColor: WidgetStatePropertyAll(Colors.green)
               ),
-              onPressed: () => updateDb(tag,newPass,isBank,newTpass,newPpass),
+              onPressed: () => updateDb(tag,newPass,isBank,newTpass,newPpass,collectionName),
               child: const Text('Update new password')
           )
         ],

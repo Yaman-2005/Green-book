@@ -1,25 +1,28 @@
 // ignore_for_file: camel_case_types, non_constant_identifier_names, prefer_interpolation_to_compose_strings
 import 'package:flutter/material.dart';
+import 'LogIn.dart';
 import 'choice.dart';
 import 'modify.dart';
 import 'mongodb.dart';
 class ViewPass extends StatefulWidget {
-  const ViewPass({super.key});
+  final String collectionName;
+  const ViewPass({super.key,required this.collectionName});
 
   @override
   State<ViewPass> createState() => _ViewPassState();
 }
 
 class _ViewPassState extends State<ViewPass> {
+
   bool checker = false,checkerIndicator = false,chekerButton = true,checkButtonNull = true,isBank = false,deleted=false;
   late String search = "", website = "", password = "",Tpassword = "",Ppassword = "",newWebsite = "",newPassword = "",newTpassword = "",newPpassword = "";
-  void Results(String tag) async {
+  void Results(String tag,String collectionName) async {
     setState(() {
       deleted = false;
       checkerIndicator = true;
       checker = false;
     });
-    dict? query = await mongodb.searchTag(search);
+    dict? query = await mongodb.searchTag(search,collectionName);
     if(query != null) {
       newWebsite = "Website: " +query["website"];
       newPassword = "Password: "+query["password"];
@@ -58,8 +61,8 @@ class _ViewPassState extends State<ViewPass> {
       Ppassword = newPpassword;
     });
   }
-  void delete(String tag) {
-    mongodb.deletePassword(tag);
+  void delete(String tag,String collectionName) {
+    mongodb.deletePassword(tag,collectionName);
     setState(() {
       checker = false;
       checkButtonNull = false;
@@ -68,6 +71,7 @@ class _ViewPassState extends State<ViewPass> {
   }
   @override
   Widget build(BuildContext context) {
+    String collectionName = widget.collectionName;
     return Builder(
           builder: (context) {
             return Scaffold(
@@ -112,7 +116,7 @@ class _ViewPassState extends State<ViewPass> {
                     ),
                     const SizedBox(height: 25,),
                     ElevatedButton(
-                        onPressed: () => Results(search),
+                        onPressed: () => Results(search,collectionName),
                         style: const ButtonStyle(
                           backgroundColor: WidgetStatePropertyAll(Colors.green),
                         ),
@@ -150,7 +154,7 @@ class _ViewPassState extends State<ViewPass> {
                                     style: const ButtonStyle(
                                         backgroundColor: WidgetStatePropertyAll(Colors.green)
                                     ),
-                                    onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Modify(tag: search,isBank: isBank,))),
+                                    onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Modify(tag: search,isBank: isBank,collectionName: collectionName,))),
                                     child: Text("Modify "+search))
                             ),
                             const SizedBox(height: 15,),
@@ -160,7 +164,7 @@ class _ViewPassState extends State<ViewPass> {
                                     style: const ButtonStyle(
                                         backgroundColor: WidgetStatePropertyAll(Colors.red)
                                     ),
-                                    onPressed: () => delete(search),
+                                    onPressed: () => delete(search,collectionName),
                                     child: Text("Delete "+search))
                             )
                           ],
@@ -170,16 +174,54 @@ class _ViewPassState extends State<ViewPass> {
                   ],
                 ),
               ),
-              floatingActionButton:  FloatingActionButton(
-                backgroundColor: Colors.green,
-                child: const Icon(
-                  Icons.add,
-                  color: Colors.white,
-                ),
-                onPressed:  () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Choice()),
-                ),
+              floatingActionButton:  Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: FloatingActionButton(
+                      backgroundColor: Colors.green,
+                      child: const Icon(
+                        Icons.add,
+                        color: Colors.white,
+                      ),
+                      onPressed:  () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Choice(collectionName: collectionName,)),
+                        ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 30),
+                    child: Align(
+                      alignment: Alignment.bottomLeft,
+                      child: FloatingActionButton(
+                        backgroundColor: Colors.green,
+                        child: const Icon(
+                          Icons.logout,
+                          color: Colors.white,
+                        ),
+                        onPressed:  () => showDialog<String>(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            backgroundColor: Colors.grey,
+                            title: const Text('Log Out?'),
+                            content: Text('This will log out of account '+collectionName),
+                            actions: [
+                              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel'),style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Colors.green)),),
+                              TextButton(onPressed: () => Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(builder: (context) =>
+                                  const LogIn()), (Route<dynamic> route) => false), child: const Text('Log out'),
+                                  style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Colors.red)),
+                              )
+                            ],
+                          )
+
+
+                        )
+                        ),
+                      ),
+                    ),
+                ]
               ),
             );
           }
