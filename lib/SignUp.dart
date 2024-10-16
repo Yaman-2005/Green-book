@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:testp/main.dart';
 import 'package:testp/mongodb.dart';
-
-import 'LogIn.dart';
 typedef dict = Map<String,dynamic>;
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -11,7 +10,7 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  late String user,pass,error='';
+  late String user='',pass='',error='';
   bool _doObscure = true,CPI = false,isError = false;
   void addUserName(String username,String password) {
     if(username == '') {
@@ -31,7 +30,7 @@ class _SignUpState extends State<SignUp> {
     mongodb.registerMasterDetails(sender);
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) =>
-        const LogIn()), (Route<dynamic> route) => false);
+        const MyApp()), (Route<dynamic> route) => false);
     print('done');
   }
   @override
@@ -41,7 +40,7 @@ class _SignUpState extends State<SignUp> {
         title: Text('Sign Up to GreenBook'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(15.0),
         child: Column(
           children: [
             const SizedBox(height: 120,),
@@ -88,7 +87,7 @@ class _SignUpState extends State<SignUp> {
                 child: Text(error)
             ),
             const SizedBox(height: 25,),
-            ElevatedButton(onPressed: () => addUserName(user,pass), child: const Text('Sign Up'))
+            ElevatedButton(onPressed: () => addUserName(user,pass),style: const ButtonStyle(backgroundColor: WidgetStatePropertyAll(Colors.green)), child: const Text('Sign Up'),)
           ],
         ),
       ),
