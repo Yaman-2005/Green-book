@@ -7,7 +7,6 @@ import 'package:testp/mongodb.dart';
 import 'package:testp/viewPass.dart';
 
 import 'LogIn.dart';
-typedef dict = Map<String,dynamic>;
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());

@@ -70,7 +70,7 @@ class _AddNewState extends State<AddNew> {
                 cursorColor: Colors.black,
                 onChanged: (value) => website = value,
                 decoration: InputDecoration(
-                    hintText: 'Enter name of website',
+                    hintText: 'Enter Username',
                     hintStyle: TextStyle(color: Colors.grey[500]),
                     filled: true,
                     fillColor: Colors.white,

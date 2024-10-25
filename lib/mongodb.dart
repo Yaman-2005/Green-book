@@ -108,4 +108,84 @@ class mongodb {
     int ans = await collection.count();
     return ans;
   }
+  static Future<bool> signUpUsernameExists(String username) async {
+    var db = await Db.create(MONGO_URL);
+    await db.open();
+    var collection = db.collection(MASTER);
+    dict? checker = await collection.findOne({'username': username});
+    if (checker == null) {
+      return false;
+    }
+    else {
+      return true;
+    }
+  }
+  static Future<bool> signUpPasswordExists(String password) async {
+    var db = await Db.create(MONGO_URL);
+    await db.open();
+    var collection = db.collection(MASTER);
+    dict? checker = await collection.findOne({'password':password});
+    if(checker == null) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+  static Future<String> forgotPassword(String username,String answer) async {
+    var db = await Db.create(MONGO_URL);
+    await db.open();
+    var collection = db.collection(MASTER);
+    dict? collector = await collection.findOne({'username':username,'answer':answer});
+    String password;
+    print(collector);
+    if(collector == null) {
+      password = 'not found';
+      return password;
+    }
+    else {
+      password = collector['password'];
+      return password;
+    }
+  }
+  static Future<bool> changeMasterPassword(String username,String answer,String oldpassword,String newpassword) async {
+    var db = await Db.create(MONGO_URL);
+    await db.open();
+    var collection = db.collection(MASTER);
+    if(await collection.findOne({'username':username,'password':oldpassword,'answer':answer}) != null) {
+      await collection.update(
+          where.eq('username', username), modify.set('password', newpassword));
+      return true;
+    }
+    return false;
+  }
+  static Future<String> getSecurityQuestion(String username) async {
+    var db = await Db.create(MONGO_URL);
+    await db.open();
+    var collection = db.collection(MASTER);
+    dict? info = await collection.findOne({'username':username});
+    if(info == null)
+      return '';
+    return info['question'];
+  }
+  static Future<dict?> getData(String username) async {
+    var db = await Db.create(MONGO_URL);
+    await db.open();
+    var collection = db.collection(MASTER);
+    dict? data = await collection.findOne({'username':username});
+    if(data == null) {
+      return null;
+    }
+    int count = await mongodb.countSlave(username);
+    String password = data['password'];
+    String question = data['question'];
+    String answer = data['answer'];
+    dict send = {
+      'passwords' : count.toString(),
+      'master' : password,
+      'question' : question,
+      'answer' : answer
+    };
+    return send;
+  }
 }

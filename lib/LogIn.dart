@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:testp/ForgotPassword.dart';
 import 'package:testp/viewPass.dart';
 import 'mongodb.dart';
 class LogIn extends StatefulWidget {
@@ -51,7 +52,9 @@ class _LogInState extends State<LogIn> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              const SizedBox(height: 120,),
+              SizedBox(height: 35,),
+              Text('login to your greenbook account to begin storing and seeing your passwords!',style: TextStyle(fontSize: 20),),
+              const SizedBox(height: 90,),
               TextField(
                 decoration: const InputDecoration(
                   filled: true,
@@ -89,7 +92,7 @@ class _LogInState extends State<LogIn> {
                 onChanged: (value) => pass = value,
               ),
               const SizedBox(height: 25,),
-              Visibility(visible: CPI,child: CircularProgressIndicator()),
+              Visibility(visible: CPI,child: const CircularProgressIndicator()),
               Visibility(
                   visible: true,
                   child: Text(error)
@@ -98,10 +101,13 @@ class _LogInState extends State<LogIn> {
               ElevatedButton(
                   onPressed: () => checkUserName(user,pass),
                   child: const Text('Log In'),
-                  style: ButtonStyle(
+                  style: const ButtonStyle(
                     backgroundColor: WidgetStatePropertyAll(Colors.green)
                   ),
-              )
+              ),
+              TextButton(onPressed: () => Navigator.push(context,MaterialPageRoute(builder: (context) => const ForgotPassword(),)), child: const Text('forgot password?',style: TextStyle(decoration: TextDecoration.underline,color: Colors.blue,),)),
+              SizedBox(height: 35,),
+              Text('Or Sign Up for free to access the book today!')
             ],
           ),
         ),

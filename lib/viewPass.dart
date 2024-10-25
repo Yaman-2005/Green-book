@@ -1,7 +1,9 @@
 // ignore_for_file: camel_case_types, non_constant_identifier_names, prefer_interpolation_to_compose_strings
 import 'package:flutter/material.dart';
+import 'package:testp/settings.dart';
 import 'LogIn.dart';
 import 'choice.dart';
+import 'main.dart';
 import 'modify.dart';
 import 'mongodb.dart';
 class ViewPass extends StatefulWidget {
@@ -24,7 +26,7 @@ class _ViewPassState extends State<ViewPass> {
     });
     dict? query = await mongodb.searchTag(search,collectionName);
     if(query != null) {
-      newWebsite = "Website: " +query["website"];
+      newWebsite = "Username: " +query["website"];
       newPassword = "Password: "+query["password"];
       if(query["isBank"] == true) {
         setState(() {
@@ -78,6 +80,7 @@ class _ViewPassState extends State<ViewPass> {
               appBar: AppBar(
                 centerTitle: true,
                 title: const Text('Greenbook'),
+                leading: IconButton(onPressed: () => Navigator.push(context,MaterialPageRoute(builder: (context) => Settings(username:  collectionName))), icon: const Icon(Icons.account_box,size: 40,color: Colors.green,)),
               ),
               body: Padding(
                 padding: const EdgeInsets.only(left:15, right: 15),
@@ -210,7 +213,7 @@ class _ViewPassState extends State<ViewPass> {
                               TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel'),style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Colors.green)),),
                               TextButton(onPressed: () => Navigator.of(context).pushAndRemoveUntil(
                                   MaterialPageRoute(builder: (context) =>
-                                  const LogIn()), (Route<dynamic> route) => false), child: const Text('Log out'),
+                                  const MyApp()), (Route<dynamic> route) => false), child: const Text('Log out'),
                                   style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Colors.red)),
                               )
                             ],
